@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>최인향_포트폴리오</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+
+    <style>
+        /* 1. 기본 세팅 - 스크롤 가능하도록 변경 */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #e8f1b7;
+            font-family: "Pretendard Variable", "Pretendard", sans-serif;
+            overflow-x: hidden; /* 가로 스크롤만 방지 */
+            width: 100%;
+        }
+
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1; 
+            display: block;
+        }
+        
+        /* 2. 상단 네비게이션 바 */
+        .navbar {
+            background-color: rgba(232, 241, 183, 0.8); /* 스크롤 시 글자 가독성을 위해 배경 추가 */
+            backdrop-filter: blur(10px);
+            height: 60px;
+            padding: 0 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed; /* 상단 고정 */
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100; 
+        }
+
+ .logo a {
+            font-size: 24px;
+            font-weight: 800;
+            color: white;
+            cursor: pointer; 
+			display: inline-block;
+            animation: float 2s ease-in-out infinite;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+			text-decoration: none;
+        }
+
+        .logo a:hover { color: #0e8b75; }
+		
+
+        .menu-links {
+            display: flex;
+            gap: 25px;
+        }
+
+        .menu-links a {
+            text-decoration: none;
+            color: #0e8b75;
+            font-weight: 700;
+            font-size: 1.1em;
+            transition: color 0.3s;
+        }
+
+        /* 3. 섹션 구조 설정 */
+        .content-wrapper {
+            position: relative;
+            z-index: 50;
+            padding-top: 100px; /* 네비바 공간 확보 */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 150px; /* 섹션 간 간격 */
+            padding-bottom: 200px;
+        }
+
+        .section {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* 이미지 스타일 */
+        .project-image {
+            max-width: 1350px;
+            width: 50%;
+            height: auto;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            margin-bottom: 60px; /* 사진과 버튼 사이 간격 */
+        }
+
+        /* 원형 버튼 공통 스타일 */
+        .circle-btn {
+            width: 240px; 
+            height: 240px; 
+            border-radius: 50%;
+            border: 6px solid white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            color: white;
+            font-weight: 800;
+            font-size: 1.6rem;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            animation: floating 4s ease-in-out infinite;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .circle-btn::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.25);
+            z-index: 1;
+            transition: background 0.3s;
+        }
+
+        .circle-btn:hover::before {
+            background: rgba(0,0,0,0.1);
+        }
+
+        .circle-btn span {
+            position: relative;
+            z-index: 2;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        /* 각 프로젝트 배경 이미지 */
+        .circle-btn1 { background-image: url("https://cdn.myportfolio.com/7fb376b3-7640-4ffc-90f5-31e5ebd67e12/c5962c83-54a7-45c7-a43c-ffa3c484f05d_rw_1920.jpg?h=374dc2bd4ab718e811e7b9ff08fa3dbd"); }
+        .circle-btn2 { background-image: url("https://cdn.myportfolio.com/7fb376b3-7640-4ffc-90f5-31e5ebd67e12/a4271987-a757-4153-aa28-55dc1b2e423d_rw_1920.jpg?h=e7d6852ee04ebbabdc8b6fdca85dc415"); animation-delay: 2s; }
+
+        .circle-btn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 20px 45px rgba(0,0,0,0.15);
+        }
+
+        @keyframes floating {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+          /* 원형 버튼 공통 스타일 */
+        .circle-btn {
+            width: 240px; 
+            height: 240px; 
+            border-radius: 50%;
+            border: 6px solid white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            color: white;
+            font-weight: 800;
+            font-size: 1.6rem;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            animation: floating 4s ease-in-out infinite;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .circle-btn::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.25);
+            z-index: 1;
+            transition: background 0.3s;
+        }
+
+        .circle-btn:hover::before {
+            background: rgba(0,0,0,0.1);
+        }
+
+        .circle-btn span {
+            position: relative;
+            z-index: 2;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        /* 각 프로젝트 배경 이미지 */
+        .circle-btn1 { background-image: url("https://cdn.myportfolio.com/7fb376b3-7640-4ffc-90f5-31e5ebd67e12/c5962c83-54a7-45c7-a43c-ffa3c484f05d_rw_1920.jpg?h=374dc2bd4ab718e811e7b9ff08fa3dbd"); }
+        .circle-btn2 { background-image: url("https://cdn.myportfolio.com/7fb376b3-7640-4ffc-90f5-31e5ebd67e12/a4271987-a757-4153-aa28-55dc1b2e423d_rw_1920.jpg?h=e7d6852ee04ebbabdc8b6fdca85dc415"); animation-delay: 2s; }
+
+        .circle-btn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 20px 45px rgba(0,0,0,0.15);
+        }
+
+        @keyframes floating {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+   /* 모바일 대응 */
+@media (max-width: 768px) {
+    /* 1. 이미지 너비 조정: 모바일 화면에 맞춰 꽉 차게 */
+    .project-image {
+        width: 90%; 
+        margin-bottom: 40px;
+    }
+
+    /* 2. 네비게이션 메뉴 초기 상태: 숨김 */
+    .menu-links {
+        display: none; 
+        flex-direction: column;
+        position: absolute;
+        top: 60px; /* 네비바 높이만큼 아래에 위치 */
+        left: 0;
+        width: 100%;
+        background-color: rgba(232, 241, 183, 0.98); /* 배경 불투명하게 조정 */
+        padding: 20px 0;
+        text-align: center;
+        gap: 20px;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        z-index: 101;
+    }
+
+    /* 'active' 클래스가 붙으면 메뉴 표시 */
+    .menu-links.active {
+        display: flex;
+    }
+
+    /* 3. 햄버거 버튼 활성화 */
+    .menu-toggle-btn {
+        display: block !important; /* 강제로 표시 */
+        font-size: 1.5rem;
+        color: #0e8b75;
+        cursor: pointer;
+    }
+
+    .circle-btn {
+        width: 180px;
+        height: 180px;
+        font-size: 1.2rem;
+    }
+    .content-wrapper { gap: 80px; }
+}
+
+/* PC 화면에서는 햄버거 버튼 숨기기 */
+@media (min-width: 769px) {
+    .menu-toggle-btn {
+        display: none;
+    }
+}
+    </style>
+</head>
+<body>
+
+    <canvas id="networkCanvas"></canvas>
+
+   <div class="cylinder-wrapper">
+        <div class="cylinder">
+            <div class="cap top_cap"></div>
+            <div class="side" style="--i:1"></div><br>
+			<div class="side" style="--i:2"></div>
+			<div class="side" style="--i:3"></div>
+            <div class="side" style="--i:4"></div>
+			<div class="side" style="--i:5"></div>
+			<div class="side" style="--i:6"></div>
+            <div class="side" style="--i:7"></div>
+			<div class="side" style="--i:8"></div>
+			<div class="side" style="--i:9"></div>
+            <div class="side" style="--i:10"></div>
+			<div class="side" style="--i:11"></div>
+			<div class="side" style="--i:12"></div>
+            <div class="cap bottom_cap"></div>
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <div class="logo"><a href="index.html" >Portfolio</a></div>
+        <div class="menu-toggle-btn" id="mobile-menu-btn"><i class="fa-solid fa-bars"></i></div>
+        <div class="menu-links" id="nav-links">
+ 			<a href="sub_product.html" >Products</a>
+            <a href="sub_package.html" >Packaging</a>
+            <a href="sub_banner.html" >Banner</a>
+            <a href="sub_web.html" >Web</a>
+            <a href="sub_resume.html" >About Me</a>
+        </div>
+    </nav>
+	
+
+    <div class="content-wrapper">
+        
+        <div class="section">
+            <img src="https://cdn.myportfolio.com/01f23203-3efd-47b5-a516-60783aed979d/0c19190a-0b8a-4e50-9182-c0f48a8b4983_rw_1920.jpg?h=11af27218b122145b7dfe681eb7a6f47"   alt="Project 01 Image" class="project-image">
+         
+        </div>
+
+    </div>
+
+    <script>
+        // 캔버스 배경 스크립트는 기존과 동일하게 유지
+        const canvas = document.getElementById('networkCanvas');
+        const ctx = canvas.getContext('2d');
+        let width, height, particles = [];
+        const particleCount = 70; 
+        const connectionDistance = 150; 
+        const particleColor = 'rgba(14, 139, 117, 0.3)';
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            initParticles();
+        }
+        window.addEventListener('resize', resize);
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 1; 
+                this.vy = (Math.random() - 0.5) * 1; 
+                this.size = Math.random() * 2 + 1; 
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                if (this.x < 0 || this.x > width) this.vx *= -1;
+                if (this.y < 0 || this.y > height) this.vy *= -1;
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = particleColor;
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < particleCount; i++) { particles.push(new Particle()); }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+                for (let j = i; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < connectionDistance) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(14, 139, 117, ${0.2 - (dist / connectionDistance) * 0.2})`; 
+                        ctx.lineWidth = 1;
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+        resize();
+        animate();
+		// 모바일 햄버거 버튼 제어
+const menuBtn = document.getElementById('mobile-menu-btn');
+const navLinks = document.getElementById('nav-links');
+
+if (menuBtn) {
+    menuBtn.addEventListener('click', () => {
+        // active 클래스를 넣었다 뺐다 하며 메뉴를 보여줌
+        navLinks.classList.toggle('active');
+    });
+}
+
+// 메뉴 링크 클릭 시 자동으로 메뉴 닫기 (페이지 이동 시 편리함)
+const allLinks = document.querySelectorAll('.menu-links a');
+allLinks.forEach(link => {
+    link.addEventListener('click', () => {
+        navLinks.classList.remove('active');
+    });
+});
+    </script>
+</body>
+</html>

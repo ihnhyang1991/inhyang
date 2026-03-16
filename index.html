@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>최인향_포트폴리오</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+
+    <style>
+        /* 1. 기본 세팅 */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #e8f1b7;
+            font-family: "Pretendard Variable", sans-serif;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1; 
+            display: block;
+        }
+        
+        .navbar {
+            background-color: transparent;
+            height: 60px;
+            padding: 0 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 100; 
+        }
+
+        .logo a {
+            font-size: 24px;
+            font-weight: 800;
+            color: white;
+            cursor: pointer; 
+			display: inline-block;
+            animation: float 2s ease-in-out infinite;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+			text-decoration: none;
+        }
+
+        .logo a:hover { color: #0e8b75; }
+		
+        .menu-links {
+            display: flex;
+            gap: 25px;
+        }
+
+        .menu-links a {
+            text-decoration: none;
+            color: #0e8b75;
+            font-weight: 700;
+            font-size: 1.1em;
+            transition: color 0.3s;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .menu-links a:hover { color: white; }
+
+        .menu-toggle-btn {
+            display: none; 
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 101;
+        }
+
+        .hero-section {
+            height: calc(100vh - 60px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            z-index: 10;
+            pointer-events: none; 
+        }
+
+      /*  .typing-text {
+            color: white;
+            font-size: 2.5rem; 
+            font-weight: 800;
+            border-right: 3px solid white;
+            white-space: nowrap;
+            overflow: hidden;
+            width: auto; 
+            animation: typing 6s steps(39) infinite, blink .5s step-end infinite;
+            text-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }*/
+
+		   /* 4. 타이핑 텍스트 효과 */
+        .typing-text {
+            color: white;
+            font-size: 2.5rem; 
+            font-family: "Pretendard", monospace; /* 영문 타자기 느낌을 위해 monospace 혼용 가능 */
+            font-weight: 800; /* Extra Bold */
+            border-right: 3px solid white;
+            white-space: nowrap;
+            overflow: hidden;
+            width: 23ch; 
+            animation: 
+                typing 6s steps(39) infinite , 
+                blink .5s step-end infinite ;
+            text-shadow: 0 5px 15px rgba(0,0,0,0.8);
+            letter-spacing: -1px;
+        }
+
+        /* ★ 5. 중앙 3D 원기둥 스타일 ★ */
+        .cylinder-wrapper {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 200px;
+            height: 250px;
+            transform: translate(-50%, -50%);
+            perspective: 1000px; 
+            z-index: 5; 
+        }
+
+        .cylinder {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: rotateCylinder 15s infinite linear; 
+        }
+
+        .side {
+            position: absolute;
+            width: 52px; /* 원둘레에 맞춘 너비 */
+            height: 250px;
+            left: 74px; /* 중앙 배치 계산 */
+            background: rgba(14, 139, 117, 0.2);
+            border-top: 2px solid #0e8b75;
+            border-bottom: 2px solid #0e8b75;
+            box-shadow: inset 0 0 10px rgba(14, 139, 117, 0.3);
+        }
+
+        /* 12개의 면을 30도씩 회전시켜 배치 */
+        .side:nth-child(1)  { transform: rotateY(0deg) translateZ(100px); }
+        .side:nth-child(2)  { transform: rotateY(30deg) translateZ(100px); }
+        .side:nth-child(3)  { transform: rotateY(60deg) translateZ(100px); }
+        .side:nth-child(4)  { transform: rotateY(90deg) translateZ(100px); }
+        .side:nth-child(5)  { transform: rotateY(120deg) translateZ(100px); }
+        .side:nth-child(6)  { transform: rotateY(150deg) translateZ(100px); }
+        .side:nth-child(7)  { transform: rotateY(180deg) translateZ(100px); }
+        .side:nth-child(8)  { transform: rotateY(210deg) translateZ(100px); }
+        .side:nth-child(9)  { transform: rotateY(240deg) translateZ(100px); }
+        .side:nth-child(10) { transform: rotateY(270deg) translateZ(100px); }
+        .side:nth-child(11) { transform: rotateY(300deg) translateZ(100px); }
+        .side:nth-child(12) { transform: rotateY(330deg) translateZ(100px); }
+
+        /* 위아래 뚜껑 */
+        .cap {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: rgba(14, 139, 117, 0.4);
+            border: 2px solid #0e8b75;
+            border-radius: 50%;
+        }
+        .top_cap { transform: rotateX(90deg) translateZ(125px); }
+        .bottom_cap { transform: rotateX(-90deg) translateZ(125px); }
+
+        @keyframes rotateCylinder {
+            from { transform: rotateX(-10deg) rotateY(0deg); }
+            to { transform: rotateX(-10deg) rotateY(360deg); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        @keyframes typing { from { width: 0 } }
+        @keyframes blink { 50% { border-color: transparent } }
+
+       /* 모바일 반응형 최적화 */
+        @media (max-width: 768px) {
+            body { overflow: hidden; } /* 스크롤 방지 유지 */
+
+            .navbar { padding: 0 20px; }
+            
+            .menu-toggle-btn { display: block; }
+
+            /* 햄버거 메뉴가 열렸을 때의 스타일 */
+            .menu-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 80%; /* 조금 더 넓게 */
+                height: 100vh;
+                background-color: rgba(14, 139, 117, 0.95); /* 브랜드 컬러로 변경 */
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 35px;
+                transition: right 0.4s ease-in-out;
+                z-index: 99;
+            }
+
+            .menu-links.active { right: 0; }
+            .menu-links a { color: white; font-size: 1.5rem; }
+
+           /* 모바일 타이핑 텍스트 수정 */
+            .typing-text {
+                font-size: 1.1rem; /* 모바일 크기 */
+                width: 23ch; /* PC와 동일하게 글자 수 고정 */
+                margin: 0 auto;
+                text-align: center;
+                white-space: nowrap; /* 줄바꿈 방지 (타이핑 효과 유지용) */
+                overflow: hidden;
+                border-right: 3px solid white;
+                /* 모바일에서도 타이핑 애니메이션 실행 */
+                animation: 
+                    typing 6s steps(39) infinite, 
+                    blink .5s step-end infinite;
+                padding: 0;
+            }
+
+            /* 원기둥 크기 및 위치 조정 */
+            .cylinder-wrapper {
+                width: 100px;
+                height: 150px;
+                top: 45%; /* 텍스트와 겹치지 않게 약간 위로 */
+            }
+
+            .side { width: 26px; height: 150px; left: 37px; }
+            .side:nth-child(n) { transform: rotateY(calc(var(--i) * 30deg)) translateZ(50px); }
+            
+            .cap { width: 100px; height: 100px; }
+            .top_cap { transform: rotateX(90deg) translateZ(75px); }
+            .bottom_cap { transform: rotateX(-90deg) translateZ(75px); }
+        }
+
+        /* 모바일용 나타나기 애니메이션 */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="networkCanvas"></canvas>
+
+    <div class="cylinder-wrapper">
+        <div class="cylinder">
+            <div class="cap top_cap"></div>
+            <div class="side" style="--i:1"></div><br>
+			<div class="side" style="--i:2"></div>
+			<div class="side" style="--i:3"></div>
+            <div class="side" style="--i:4"></div>
+			<div class="side" style="--i:5"></div>
+			<div class="side" style="--i:6"></div>
+            <div class="side" style="--i:7"></div>
+			<div class="side" style="--i:8"></div>
+			<div class="side" style="--i:9"></div>
+            <div class="side" style="--i:10"></div>
+			<div class="side" style="--i:11"></div>
+			<div class="side" style="--i:12"></div>
+            <div class="cap bottom_cap"></div>
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <div class="logo"><a href="index.html" >Portfolio</a></div>
+        <div class="menu-toggle-btn" id="mobile-menu-btn"><i class="fa-solid fa-bars"></i></div>
+        <div class="menu-links" id="nav-links">
+ 			<a href="sub_product.html" >Products</a>
+            <a href="sub_package.html" >Packaging</a>
+            <a href="sub_banner.html" >Banner</a>
+            <a href="sub_web.html" >Web</a>
+            <a href="sub_resume.html" >About Me</a>
+        </div>
+    </nav>
+	
+    <div class="hero-section">
+        <div class="typing-text">트랜드 리딩 최인향 웹디자이너입니다.</div>
+    </div>
+
+    <script>
+        // 모바일 메뉴 제어
+        const mobileBtn = document.getElementById('mobile-menu-btn');
+        const navLinks = document.getElementById('nav-links');
+        const icon = mobileBtn.querySelector('i');
+        mobileBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            icon.classList.toggle('fa-bars');
+            icon.classList.toggle('fa-xmark');
+        });
+
+        // 배경 애니메이션 (Canvas)
+        const canvas = document.getElementById('networkCanvas');
+        const ctx = canvas.getContext('2d');
+        let width, height, particles = [];
+        const particleCount = 80;
+        const connectionDistance = 140;
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            particles = [];
+            for(let i=0; i<particleCount; i++) particles.push({
+                x: Math.random()*width, y: Math.random()*height,
+                vx: (Math.random()-0.5)*1, vy: (Math.random()-0.5)*1, size: 2
+            });
+        }
+        window.addEventListener('resize', resize);
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            particles.forEach((p, i) => {
+                p.x += p.vx; p.y += p.vy;
+                if(p.x<0 || p.x>width) p.vx*=-1;
+                if(p.y<0 || p.y>height) p.vy*=-1;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+                ctx.fillStyle = '#0e8b75';
+                ctx.fill();
+                for(let j=i; j<particles.length; j++) {
+                    const d = Math.sqrt((p.x-particles[j].x)**2 + (p.y-particles[j].y)**2);
+                    if(d < connectionDistance) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(14, 139, 117, ${1 - d/connectionDistance})`;
+                        ctx.moveTo(p.x, p.y); ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            });
+            requestAnimationFrame(animate);
+        }
+        resize(); animate();
+    </script>
+</body>
+</html>
